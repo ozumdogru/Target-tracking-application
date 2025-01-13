@@ -10,17 +10,17 @@
 #define MAX_NAME_LENGTH 100
 #define MAX_DESC_LENGTH 255
 
-// Goal struct definition
+// Goal structure definition
 typedef struct {
-    char name[MAX_NAME_LENGTH];
-    char description[MAX_DESC_LENGTH];
-    int progress;
-    int target;
-    char deadline[11];
+    char name[MAX_NAME_LENGTH]; // Goal name
+    char description[MAX_DESC_LENGTH]; // Goal description
+    int progress; // Current progress towards the goal
+    int target; // Target value to reach
+    char deadline[11]; // Deadline in format YYYY-MM-DD
 } Goal;
 
-Goal goals[MAX_GOALS];
-int goalCount = 0;
+Goal goals[MAX_GOALS]; // Array to store goals
+int goalCount = 0; // Counter to track the number of goals
 
 // Function to add a new goal
 void addGoal() {
@@ -32,7 +32,7 @@ void addGoal() {
     Goal newGoal;
     printf("\nEnter the name of the goal: ");
     fgets(newGoal.name, MAX_NAME_LENGTH, stdin);
-    newGoal.name[strcspn(newGoal.name, "\n")] = 0;
+    newGoal.name[strcspn(newGoal.name, "\n")] = 0; // Remove newline character
 
     printf("Enter a description: ");
     fgets(newGoal.description, MAX_DESC_LENGTH, stdin);
@@ -44,8 +44,8 @@ void addGoal() {
     printf("Enter the deadline (YYYY-MM-DD): ");
     scanf("%s", newGoal.deadline);
 
-    newGoal.progress = 0;
-    goals[goalCount++] = newGoal;
+    newGoal.progress = 0; // Initialize progress to 0
+    goals[goalCount++] = newGoal; // Add new goal to the list
     printf("\nGoal added successfully!\n");
 }
 
@@ -90,16 +90,16 @@ void updateProgress() {
         return;
     }
 
-    goals[choice - 1].progress = newProgress;
+    goals[choice - 1].progress = newProgress; // Update progress of the selected goal
     printf("\nProgress updated successfully!\n");
 }
 
-// Main menu function
+// Main menu function to navigate through options
 void menu() {
     int choice;
 
     while (1) {
-        printf("\n--- Target Tracking App ---\n");
+        printf("\n--- Goal Tracking App ---\n");
         printf("1. Add a Goal\n");
         printf("2. View Goals\n");
         printf("3. Update Progress\n");
@@ -110,27 +110,21 @@ void menu() {
 
         switch (choice) {
             case 1:
-                addGoal();
+                addGoal(); // Call addGoal function
                 break;
             case 2:
-                viewGoals();
+                viewGoals(); // Call viewGoals function
                 break;
             case 3:
-                updateProgress();
+                updateProgress(); // Call updateProgress function
                 break;
             case 4:
                 printf("\nGoodbye!\n");
-                return;
+                return; // Exit the program
             default:
                 printf("\nInvalid choice. Please try again.\n");
         }
     }
-}
-
-// Main function to start the application
-int main() {
-    menu();
-    return 0;
 }
 
 // Test functions
@@ -155,16 +149,21 @@ void testUpdateProgress() {
     CU_ASSERT(testGoal.progress == 80);
 }
 
-// CUnit Test Runner
-int mainTest() {
+// Main function to start the application
+int main() {
+    // Set up CUnit and run tests
     CU_initialize_registry();
+    CU_pSuite suite = CU_add_suite("Goal Tracker Tests", NULL, NULL);
 
-    CU_pSuite pSuite = CU_add_suite("GoalTrackerTest", 0, 0);
-    CU_add_test(pSuite, "testAddGoal", testAddGoal);
-    CU_add_test(pSuite, "testUpdateProgress", testUpdateProgress);
+    CU_add_test(suite, "Test Add Goal", testAddGoal);
+    CU_add_test(suite, "Test Update Progress", testUpdateProgress);
 
     CU_basic_run_tests();
     CU_cleanup_registry();
 
+    // Start the main menu function
+    menu();
     return 0;
 }
+
+
